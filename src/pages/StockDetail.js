@@ -5,6 +5,7 @@ import StockHeader from '../components/stock/StockHeader';
 import StockMetricsCard from '../components/stock/StockMetricsCard';
 import StockPerformanceChart from '../components/charts/StockPerformanceChart';
 import PerformanceComparisonChart from '../components/charts/PerformanceComparisonChart';
+import { fetchStockDetail } from '../services/mockApiService';
 
 const StockDetail = () => {
   const { symbol } = useParams();
@@ -14,17 +15,14 @@ const StockDetail = () => {
   const [chartPeriod, setChartPeriod] = useState('6m');
 
   useEffect(() => {
-    const fetchStockData = async () => {
+    const getStockData = async () => {
       try {
         setLoading(true);
         
-        // Dans un cas réel, nous ferions une requête API ici
-        // Pour la démo, nous simulons des données
-        setTimeout(() => {
-          const mockStock = generateMockStockData(symbol);
-          setStock(mockStock);
-          setLoading(false);
-        }, 800);
+        // Utiliser notre service de mock API
+        const data = await fetchStockDetail(symbol);
+        setStock(data);
+        setLoading(false);
       } catch (err) {
         console.error('Error fetching stock data:', err);
         setError('Impossible de récupérer les données de l\'action. Veuillez réessayer.');
@@ -32,23 +30,8 @@ const StockDetail = () => {
       }
     };
 
-    fetchStockData();
+    getStockData();
   }, [symbol]);
-
-  // Fonction pour générer des données mock pour une action
-  const generateMockStockData = (symbol) => {
-    return {
-      symbol,
-      name: `${symbol} Inc.`,
-      currentPrice: Math.random() * 500 + 50,
-      wma200: Math.random() * 500 + 40,
-      return6m: Math.random() * 40 - 10, // -10% à +30%
-      return12m: Math.random() * 60 - 15, // -15% à +45%
-      beta: Math.random() * 2.5 + 0.2, // 0.2 à 2.7
-      volume: Math.floor(Math.random() * 10000000) + 100000,
-      marketCap: Math.floor(Math.random() * 1000) + 10, // en milliards
-    };
-  };
 
   if (loading) {
     return (
