@@ -7,14 +7,12 @@ const Layout = ({ children }) => {
   const { theme } = useTheme();
 
   return (
-    <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'dark' : ''}`}>
+    <div className={`min-h-screen ${theme === 'dark' ? 'dark' : ''}`}>
       <Navbar />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-4 md:p-6 overflow-y-auto bg-gray-50 dark:bg-gray-900">
-          <div className="container mx-auto">
-            {children}
-          </div>
+        <main className="flex-1 p-4 md:p-6 lg:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+          {children}
         </main>
       </div>
     </div>
