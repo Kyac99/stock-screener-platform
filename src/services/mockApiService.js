@@ -103,6 +103,14 @@ const generateMockStockData = (symbol) => {
   // Générer la capitalisation boursière (en milliards)
   const marketCap = 10 + Math.floor(Math.random() * 1000);
   
+  // Générer le PER (Price-to-Earnings Ratio)
+  // Généralement entre 5 et 50, avec une concentration plus forte entre 10 et 30
+  const per = 5 + Math.floor(Math.random() * 45);
+  
+  // Générer le ROE (Return on Equity) en pourcentage
+  // Généralement entre 2% et 35%
+  const roe = 2 + Math.random() * 33;
+  
   return {
     symbol,
     name: `${symbol} Inc.`,
@@ -113,5 +121,7 @@ const generateMockStockData = (symbol) => {
     beta,
     volume,
     marketCap,
+    per,
+    roe
   };
 };
