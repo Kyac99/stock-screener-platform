@@ -117,6 +117,8 @@ const StockDetail = () => {
               <li>• Performance sur 6 mois: {stock.return6m.toFixed(2)}%</li>
               <li>• Performance sur 12 mois: {stock.return12m.toFixed(2)}%</li>
               <li>• Bêta: {stock.beta.toFixed(2)}</li>
+              <li>• PER (Price-to-Earnings Ratio): {stock.per.toFixed(2)}</li>
+              <li>• ROE (Return on Equity): {stock.roe.toFixed(2)}%</li>
             </ul>
           </div>
           <div>
@@ -126,6 +128,8 @@ const StockDetail = () => {
               <li>• {stock.return6m > 0 ? 'Performance positive sur 6 mois' : 'Performance négative sur 6 mois'}</li>
               <li>• {stock.return12m > 0 ? 'Performance positive sur 12 mois' : 'Performance négative sur 12 mois'}</li>
               <li>• {stock.beta > 1 ? 'Bêta supérieur à 1: plus volatile que le marché' : 'Bêta inférieur à 1: moins volatile que le marché'}</li>
+              <li>• {stock.per < 15 ? 'PER attractif: valorisation potentiellement avantageuse' : stock.per > 25 ? 'PER élevé: valorisation premium ou attentes de forte croissance' : 'PER modéré: valorisation généralement équilibrée'}</li>
+              <li>• {stock.roe > 15 ? 'ROE élevé: bon retour sur capitaux propres' : stock.roe > 10 ? 'ROE satisfaisant: au-dessus de la moyenne' : 'ROE modéré à faible: efficacité limitée'}</li>
             </ul>
           </div>
         </div>
