@@ -76,6 +76,22 @@ const ResultsTable = ({ stocks, loading, error }) => {
     return 'text-gray-600 dark:text-gray-400';
   };
 
+  // Helper pour évaluer la valeur du PER
+  const getPERClass = (per) => {
+    if (per < 10) return 'text-green-600 dark:text-green-400'; // très bon
+    if (per < 20) return 'text-blue-600 dark:text-blue-400';   // bon
+    if (per < 30) return 'text-yellow-600 dark:text-yellow-400'; // moyen
+    return 'text-red-600 dark:text-red-400'; // élevé
+  };
+
+  // Helper pour évaluer la valeur du ROE
+  const getROEClass = (roe) => {
+    if (roe > 20) return 'text-green-600 dark:text-green-400'; // excellent
+    if (roe > 15) return 'text-blue-600 dark:text-blue-400';   // très bon
+    if (roe > 10) return 'text-yellow-600 dark:text-yellow-400'; // bon
+    return 'text-gray-600 dark:text-gray-400'; // moyen ou faible
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
       <div className="overflow-x-auto">
@@ -130,6 +146,23 @@ const ResultsTable = ({ stocks, loading, error }) => {
                   )}
                 </div>
               </th>
+              {/* Nouvelles colonnes pour PER et ROE */}
+              <th onClick={() => handleSort('per')} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+                <div className="flex items-center">
+                  PER
+                  {sortField === 'per' && (
+                    sortDirection === 'asc' ? <FiArrowUp className="ml-1" /> : <FiArrowDown className="ml-1" />
+                  )}
+                </div>
+              </th>
+              <th onClick={() => handleSort('roe')} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+                <div className="flex items-center">
+                  ROE
+                  {sortField === 'roe' && (
+                    sortDirection === 'asc' ? <FiArrowUp className="ml-1" /> : <FiArrowDown className="ml-1" />
+                  )}
+                </div>
+              </th>
               <th scope="col" className="relative px-6 py-3">
                 <span className="sr-only">Actions</span>
               </th>
@@ -173,6 +206,20 @@ const ResultsTable = ({ stocks, loading, error }) => {
                     ) : (
                       <span className="text-gray-600 dark:text-gray-400">≤ 1</span>
                     )}
+                  </div>
+                </td>
+                {/* Cellules pour PER et ROE */}
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className={`text-sm ${getPERClass(stock.per)}`}>
+                    {formatNumber(stock.per, 1)}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    {stock.per < 15 ? 'Attractif' : stock.per > 25 ? 'Élevé' : 'Moyen'}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className={`text-sm ${getROEClass(stock.roe)}`}>
+                    {formatPercent(stock.roe)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
