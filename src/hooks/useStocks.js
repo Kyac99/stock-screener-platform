@@ -10,7 +10,12 @@ export const useStocks = (indexName) => {
     aboveWMA200: false,
     highReturn6m: false,
     highReturn12m: false,
-    betaAbove1: false
+    betaAbove1: false,
+    // Nouveaux filtres pour PER et ROE
+    perMin: '',
+    perMax: '',
+    roeMin: '',
+    roeMax: ''
   });
 
   useEffect(() => {
@@ -36,8 +41,21 @@ export const useStocks = (indexName) => {
   // Fonction pour filtrer les stocks selon les critères sélectionnés
   const filteredStocks = () => {
     return stocks.filter(stock => {
-      // Si aucun filtre n'est activé, retourne toutes les actions
-      if (!filters.aboveWMA200 && !filters.highReturn6m && !filters.highReturn12m && !filters.betaAbove1) {
+      // Convertir les valeurs de filtre en nombres (si elles sont définies)
+      const perMinValue = filters.perMin !== '' ? parseFloat(filters.perMin) : null;
+      const perMaxValue = filters.perMax !== '' ? parseFloat(filters.perMax) : null;
+      const roeMinValue = filters.roeMin !== '' ? parseFloat(filters.roeMin) : null;
+      const roeMaxValue = filters.roeMax !== '' ? parseFloat(filters.roeMax) : null;
+
+      // Si aucun filtre n'est activé ou défini, retourne toutes les actions
+      if (!filters.aboveWMA200 && 
+          !filters.highReturn6m && 
+          !filters.highReturn12m && 
+          !filters.betaAbove1 &&
+          perMinValue === null && 
+          perMaxValue === null && 
+          roeMinValue === null && 
+          roeMaxValue === null) {
         return true;
       }
 
@@ -60,8 +78,34 @@ export const useStocks = (indexName) => {
         meetsFilters = false;
       }
       
+      // Nouveaux filtres pour PER
+      if (perMinValue !== null && stock.per < perMinValue) {
+        meetsFilters = false;
+      }
+      
+      if (perMaxValue !== null && stock.per > perMaxValue) {
+        meetsFilters = false;
+      }
+      
+      // Nouveaux filtres pour ROE
+      if (roeMinValue !== null && stock.roe < roeMinValue) {
+        meetsFilters = false;
+      }
+      
+      if (roeMaxValue !== null && stock.roe > roeMaxValue) {
+        meetsFilters = false;
+      }
+      
       return meetsFilters;
     });
+  };
+
+  // Fonction pour mettre à jour les filtres numériques
+  const updateNumericFilter = (filterName, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterName]: value
+    }));
   };
 
   return {
@@ -70,6 +114,7 @@ export const useStocks = (indexName) => {
     loading,
     error,
     filters,
-    setFilters
+    setFilters,
+    updateNumericFilter
   };
 };
