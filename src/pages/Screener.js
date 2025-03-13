@@ -6,7 +6,7 @@ import ResultsTable from '../components/screener/ResultsTable';
 
 const Screener = () => {
   const { selectedIndex } = useIndex();
-  const { stocks, loading, error, filters, setFilters } = useStocks(selectedIndex);
+  const { stocks, loading, error, filters, setFilters, updateNumericFilter } = useStocks(selectedIndex);
 
   return (
     <div>
@@ -18,7 +18,11 @@ const Screener = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Panneau de filtres (sidebar) */}
         <div className="lg:col-span-1">
-          <FilterPanel filters={filters} setFilters={setFilters} />
+          <FilterPanel 
+            filters={filters} 
+            setFilters={setFilters} 
+            updateNumericFilter={updateNumericFilter}
+          />
           
           {/* Carte d'information */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mt-6">
@@ -35,6 +39,31 @@ const Screener = () => {
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400">
                 <span className="font-medium">Bêta</span>: Mesure de volatilité par rapport au marché
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="font-medium">PER</span>: Price-to-Earnings Ratio, rapport entre le prix et les bénéfices
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="font-medium">ROE</span>: Return on Equity, rentabilité des capitaux propres
+              </div>
+            </div>
+          </div>
+          
+          {/* Carte d'exemples de filtrage */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mt-6">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">Exemples de filtrage</h3>
+            <div className="space-y-3">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="font-medium">Croissance & Valeur</span>: PER entre 10 et 20, ROE > 15%
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="font-medium">Momentum technique</span>: Prix > WMA 200, Rendement 6M > 0
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="font-medium">Blue Chips</span>: PER < 25, ROE > 12%, Bêta < 1
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="font-medium">Croissance agressive</span>: ROE > 20%, Rendement 12M > 15%
               </div>
             </div>
           </div>
