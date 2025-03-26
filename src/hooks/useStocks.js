@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchStocksByIndex } from '../services/mockApiService';
+import { fetchStocksByIndex } from '../services/apiService';
 
 // Hook personnalisé pour récupérer et filtrer les données des actions
 export const useStocks = (indexName) => {
@@ -11,7 +11,7 @@ export const useStocks = (indexName) => {
     highReturn6m: false,
     highReturn12m: false,
     betaAbove1: false,
-    // Nouveaux filtres pour PER et ROE
+    // Filtres pour PER et ROE
     perMin: '',
     perMax: '',
     roeMin: '',
@@ -23,7 +23,7 @@ export const useStocks = (indexName) => {
       try {
         setLoading(true);
         
-        // Utiliser notre service de mock API
+        // Utiliser notre service API Yahoo Finance
         const data = await fetchStocksByIndex(indexName);
         
         setStocks(data);
@@ -78,7 +78,7 @@ export const useStocks = (indexName) => {
         meetsFilters = false;
       }
       
-      // Nouveaux filtres pour PER
+      // Filtres pour PER
       if (perMinValue !== null && stock.per < perMinValue) {
         meetsFilters = false;
       }
@@ -87,7 +87,7 @@ export const useStocks = (indexName) => {
         meetsFilters = false;
       }
       
-      // Nouveaux filtres pour ROE
+      // Filtres pour ROE
       if (roeMinValue !== null && stock.roe < roeMinValue) {
         meetsFilters = false;
       }
