@@ -53,12 +53,13 @@ Sélection de différents indices pour cibler votre recherche:
 - **Frontend:**
   - React.js 18
   - Tailwind CSS avec DaisyUI pour le design
-  - React Router pour la navigation
+  - React Router (HashRouter) pour la navigation
   - Chart.js avec React-ChartJS-2 pour les visualisations
   - React Icons
 
 - **Données:**
-  - API mock pour démonstration (peut être remplacée par des API financières réelles)
+  - API Yahoo Finance via RapidAPI pour les données financières réelles
+  - Fallback sur des données simulées en cas de problème d'API
 
 ## 📦 Installation et démarrage local
 
@@ -73,89 +74,62 @@ Sélection de différents indices pour cibler votre recherche:
    npm install
    ```
 
-3. **Lancer l'application en mode développement**
+3. **Configurer l'API (optionnel)**
+   - Si vous souhaitez utiliser l'API Yahoo Finance, inscrivez-vous sur [RapidAPI](https://rapidapi.com/)
+   - Abonnez-vous à l'API Yahoo Finance
+   - Copiez votre clé API et modifiez la variable `RAPID_API_KEY` dans le fichier `src/services/apiService.js`
+
+4. **Lancer l'application en mode développement**
    ```bash
    npm start
    ```
    
-4. **Accéder à l'application**
+5. **Accéder à l'application**
    L'application sera disponible à l'adresse [http://localhost:3000](http://localhost:3000)
 
 ## 🚀 Déploiement avec GitHub Pages
 
-Le projet est configuré pour être facilement déployé sur GitHub Pages, permettant de le rendre accessible sur le web sans serveur dédié.
+Cette application est déjà configurée et déployée sur GitHub Pages. Suivez ces étapes si vous avez besoin de la redéployer ou de déployer votre propre version.
 
-### Prérequis pour le déploiement
-- Un compte GitHub
-- Git installé sur votre machine
-- Node.js et npm installés
+### Configuration déjà réalisée
 
-### Étapes détaillées pour le déploiement
+1. **package.json**
+   - Propriété `"homepage"` ajoutée
+   - Scripts `"predeploy"` et `"deploy"` configurés
+   - Dépendance `"gh-pages"` installée
 
-1. **Forker ou cloner ce dépôt**
-   Assurez-vous d'avoir une copie du code sur votre compte GitHub.
+2. **React Router**
+   - HashRouter utilisé (à la place de BrowserRouter) pour la compatibilité avec GitHub Pages
 
-2. **Configurer package.json**
-   Vérifiez que votre fichier `package.json` inclut les éléments suivants:
-   - La propriété `"homepage"` pointant vers votre GitHub Pages URL
-   - Les scripts `"predeploy"` et `"deploy"` 
-   - La dépendance `"gh-pages"` dans devDependencies
-   
-   ```json
-   {
-     "name": "stock-screener-platform",
-     "version": "0.1.0",
-     "homepage": "https://votre-nom-utilisateur.github.io/stock-screener-platform",
-     "scripts": {
-       "predeploy": "npm run build",
-       "deploy": "gh-pages -d build",
-       ...
-     },
-     "devDependencies": {
-       "gh-pages": "^6.1.0",
-       ...
-     }
-   }
-   ```
+3. **Pages de redirection**
+   - Fichier 404.html configuré
+   - Script de redirection dans index.html
 
-3. **Utiliser HashRouter**
-   Le projet utilise déjà HashRouter au lieu de BrowserRouter pour une meilleure compatibilité avec GitHub Pages. Cela permet aux URL de fonctionner correctement sans configuration serveur spéciale.
+### Comment redéployer
 
-4. **Installer les dépendances et déployer**
+1. **Après avoir effectué des modifications, exécutez :**
    ```bash
-   npm install
    npm run deploy
    ```
-   
-   Cette commande va:
-   - Construire votre application avec `npm run build`
-   - Créer une branche `gh-pages` dans votre dépôt
-   - Pousser le contenu du dossier `build` vers cette branche
 
-5. **Configurer GitHub Pages dans les paramètres**
-   - Allez dans l'onglet "Settings" de votre dépôt GitHub
-   - Naviguez jusqu'à la section "Pages"
-   - Dans "Source", sélectionnez la branche `gh-pages`
-   - Cliquez sur "Save"
+2. **Vérifiez que la branche gh-pages est active dans les paramètres GitHub Pages**
+   - Allez dans Settings > Pages
+   - Source devrait être "Deploy from a branch"
+   - Branch devrait être "gh-pages"
 
-6. **Accéder à votre site**
-   Après quelques minutes, votre application sera accessible à l'URL:
-   `https://votre-nom-utilisateur.github.io/stock-screener-platform/`
+3. **Accédez à votre site**
+   Attendez quelques minutes puis visitez :
+   [https://kyac99.github.io/stock-screener-platform/](https://kyac99.github.io/stock-screener-platform/)
 
-### Dépannage du déploiement
+## 🔄 Intégration avec Yahoo Finance
 
-- **Page blanche après déploiement**: Vérifiez que vous utilisez bien HashRouter et non BrowserRouter.
-- **Images ou ressources manquantes**: Assurez-vous d'utiliser des chemins relatifs pour toutes les ressources.
-- **Erreurs 404**: Vérifiez que le fichier 404.html est correctement configuré.
+Cette application utilise l'API Yahoo Finance pour obtenir des données financières réelles. Les données incluent :
 
-## 🔄 Structure des données
+- Prix actuels et historiques des actions
+- Métriques clés comme le PER et le ROE
+- Bêta et autres statistiques
 
-Pour cette démo, l'application utilise des données générées aléatoirement. Dans un environnement de production, vous pourriez connecter ce front-end à des APIs financières comme:
-- Yahoo Finance
-- Alpha Vantage
-- IEX Cloud
-
-Voici un exemple du format de données utilisé:
+Voici un exemple du format de données récupérées et traitées :
 
 ```javascript
 {
@@ -169,13 +143,26 @@ Voici un exemple du format de données utilisé:
   per: 28.5,     // Price-to-Earnings Ratio
   roe: 18.7,     // Return on Equity (%)
   volume: 35821567,
-  marketCap: 2850
+  marketCap: 2850  // En milliards
 }
 ```
 
+### Implémentation technique
+
+1. **Récupération des données**
+   - Appels API à Yahoo Finance via RapidAPI
+   - Traitement et normalisation des données
+
+2. **Calculs financiers**
+   - WMA 200 calculée à partir des données historiques
+   - Rendements sur 6 et 12 mois calculés en comparant les prix actuels et passés
+
+3. **Système de fallback**
+   - Génération de données simulées en cas d'erreur API
+   - Permet à l'application de fonctionner même sans clé API
+
 ## 🛣️ Feuille de route
 
-- [ ] Connexion à des API financières réelles
 - [ ] Ajout de critères de filtrage supplémentaires (dividendes, secteurs, etc.)
 - [ ] Sauvegarde des configurations de filtres
 - [ ] Authentification des utilisateurs
