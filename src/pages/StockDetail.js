@@ -5,7 +5,7 @@ import StockHeader from '../components/stock/StockHeader';
 import StockMetricsCard from '../components/stock/StockMetricsCard';
 import StockPerformanceChart from '../components/charts/StockPerformanceChart';
 import PerformanceComparisonChart from '../components/charts/PerformanceComparisonChart';
-import { fetchStockDetail } from '../services/mockApiService';
+import { fetchStockDetail } from '../services/apiService';
 
 const StockDetail = () => {
   const { symbol } = useParams();
@@ -19,7 +19,7 @@ const StockDetail = () => {
       try {
         setLoading(true);
         
-        // Utiliser notre service de mock API
+        // Utiliser notre service API Yahoo Finance
         const data = await fetchStockDetail(symbol);
         setStock(data);
         setLoading(false);
@@ -107,7 +107,7 @@ const StockDetail = () => {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">À propos de {stock.symbol}</h2>
         <p className="text-gray-600 dark:text-gray-400 mb-4">
-          Les données présentées sont générées pour la démonstration. Dans un environnement de production, cette section afficherait des informations détaillées sur l'entreprise, ses activités, ses fondamentaux financiers et d'autres métriques pertinentes.
+          Données obtenues via Yahoo Finance. Cette section présente les principales métriques de l'action et leur interprétation pour vous aider dans vos décisions d'investissement.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
